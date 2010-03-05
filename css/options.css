@@ -1,0 +1,48 @@
+body
+{ 
+  font-size: 12px;
+  font-family: "Lucida Console";
+  color: #101010;
+  }
+
+
+#save_status
+{
+		padding: 5px;
+		color: green;
+		float: right;
+}
+
+
+.settings-table
+{ 
+  width: 400px;
+  padding: 10px;
+  border: solid 1px #ccc;
+ }
+
+.color
+{ 
+  width: 60px;
+  border: solid 1px #ccc;
+  font-size: 10px;
+ }
+
+.option_col
+{ 
+  width: 250px;
+ }
+
+h1
+{ 
+  font-variant: small-caps;
+  font-size: 18px;
+ }
+
+#main_container
+{ 
+  margin-left: auto;
+  margin-right: auto;
+  width: 400px;
+  padding-top: 100px;
+ }

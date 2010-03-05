@@ -1,0 +1,15 @@
+body
+{  
+  background-color: red;
+}
+
+.action_btn
+{  
+  margin-top: 2px;
+  text-align: center;
+  font-size: 11px;
+  width: 200px;
+  height: 20px;
+  background-color: #ccc;
+  cursor:pointer;
+}

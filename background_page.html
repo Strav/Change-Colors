@@ -1,0 +1,163 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" lang="fr"> 
+<head>
+<script>
+
+var CssToInject = buildCssToInject();
+
+var IsOverrideAll;
+var IsPageOverriden;
+var IsDomainOverriden;
+
+var OverridenDomains = new Array();
+var OverridenPages = new Array();
+var OverrideAll;
+
+var CurrentTabId;
+
+function buildCssToInject(){
+    return "html > body, html > * {background-color:red !important;} div[style]{background-color: green !important;}";
+}
+
+function callInjectCss(){
+  chrome.tabs.sendRequest(CurrentTabId, {action: "injectCss", cssToInject: buildCssToInject()} , null);
+}
+
+function callRemoveCss(){
+  chrome.tabs.sendRequest(CurrentTabId, {action: "removeCss"}, null);
+}
+
+function extractDomain(url){
+    return url.match(/:\/\/(.+?)\//)[1];
+}
+
+function checkIfDomainOverriden(domain){    
+    IsDomainOverriden = OverridenDomains.indexOf(domain) != -1;
+}
+
+function checkIfPageOverriden(path){
+    IsPageOverriden = OverridenPages.indexOf(path) != -1;
+}
+
+function checkIfOverrideAll(){
+    return IsOverrideAll;
+}
+
+function RemovePageOverride(){
+    chrome.tabs.get(CurrentTabId, function (tab){
+	OverridenPages.splice(OverridenPages.indexOf(tab.url),1);
+	localStorage["OverridenPages"]  = JSON.stringify(OverridenPages);
+    });    
+    IsPageOverriden = false;
+    callRemoveCss();
+}
+
+function RemoveDomainOverride(){
+    chrome.tabs.get(CurrentTabId, function (tab){
+	domain = extractDomain(tab.url);
+	OverridenDomains.splice(OverridenDomains.indexOf(domain),1);
+	localStorage["OverridenDomains"]  = JSON.stringify(OverridenPages);
+    });
+    IsDomainOverriden = false;
+    callRemoveCss();
+}
+
+function RemoveOverrideAll(){
+    localStorage["OverrideAll"]  = JSON.stringify(false);
+    IsOverrideAll = false;
+    callRemoveCss();
+}
+
+function ApplyPageOverride(){
+    chrome.tabs.get(CurrentTabId, function (tab){
+	OverridenPages.push(tab.url)	
+	localStorage["OverridenPages"]  = JSON.stringify(OverridenPages);
+    });
+    IsPageOverriden = true;
+    callInjectCss();
+}
+
+function ApplyDomainOverride(){
+    chrome.tabs.get(CurrentTabId, function (tab){
+	OverridenDomains.push(extractDomain(tab.url))	
+	localStorage["OverridenDomains"]  = JSON.stringify(OverridenDomains);
+    });
+    IsDomainOverriden = true;
+    callInjectCss();
+}
+
+function ApplyOverrideAll(){
+    localStorage["OverrideAll"]  = JSON.stringify(true);
+    IsOverrideAll = true;
+    callInjectCss();
+}
+
+function IsStyleOverriden(url){
+    var domain = extractDomain(url);
+    checkIfOverrideAll();
+    checkIfPageOverriden(url);
+    checkIfDomainOverriden(domain);
+    return IsDomainOverriden || IsPageOverriden || IsOverrideAll;
+}
+
+
+function displayDefault(tabId)
+{
+    chrome.pageAction.setIcon({tabId: tabId, path: "icons/colors_icons.png"});
+}
+
+
+function displayOverriden(tabId)
+{
+    chrome.pageAction.setIcon({tabId: tabId, path: "icons/colors_icons.png"});
+}
+
+
+function updatePageAction(tabId){
+    CurrentTabId = tabId
+    chrome.tabs.get(tabId, function (tab){
+	
+	if(IsStyleOverriden(tab.url)){	    
+	    callInjectCss();
+	    displayOverriden(tab.id);
+	}
+	else
+	    displayDefault(tab.id);
+	chrome.pageAction.show(tabId);
+    });
+}
+
+function setDefaults()
+{
+    localStorage["OverridenDomains"] = JSON.stringify(new Array());
+    localStorage["OverridenPages"]  = JSON.stringify(new Array());
+    localStorage["OverrideAll"]  = JSON.stringify(false);
+    localStorage["IsNotFirstStart"] = JSON.stringify(true);
+}
+
+
+function getOverrides()
+{
+    OverridenDomains = JSON.parse(localStorage["OverridenDomains"]);
+    OverridenPages = JSON.parse(localStorage["OverridenPages"]);
+    IsOverrideAll = JSON.parse(localStorage["OverrideAll"]);
+}
+
+if(localStorage["IsNotFirstStart"] == undefined){
+    setDefaults();
+    getOverrides();
+}
+else
+{
+    getOverrides();
+}    
+
+chrome.tabs.onUpdated.addListener(updatePageAction);
+chrome.tabs.onSelectionChanged.addListener(updatePageAction);
+//chrome.tabs.onCreated.addListener(updatePageAction);
+
+</script>
+</head>
+<body>
+</body>
+</html>

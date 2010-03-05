@@ -1,0 +1,49 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"> 
+<head>
+<link rel="stylesheet" type="text/css" href="css/pop_up.css" /> 
+<script>
+
+
+
+function ChangeBtnState(BtnId, BtnText, BindFunction)
+{
+    var btn = document.getElementById(BtnId);
+    btn.innerHTML = BtnText;
+    btn.onclick = function(){BindFunction.call(); DisplayButtons();};
+}
+
+function DisplayButtons(){
+var BackgroundPage = chrome.extension.getBackgroundPage();
+    if(BackgroundPage.IsPageOverriden){
+	ChangeBtnState('pageOverriden', 'Remove override on this page', BackgroundPage.RemovePageOverride);
+    }
+    else{
+	ChangeBtnState('pageOverriden', 'Apply override on this page', BackgroundPage.ApplyPageOverride);
+    }
+    
+    if(BackgroundPage.IsDomainOverriden){
+	ChangeBtnState('domainOverriden', 'Remove override on this domain', BackgroundPage.RemoveDomainOverride);
+    }
+    else{
+	ChangeBtnState('domainOverriden', 'Apply override on this domain', BackgroundPage.ApplyDomainOverride);
+    }
+
+    if(BackgroundPage.IsOverrideAll){
+	ChangeBtnState('overrideAll', 'Remove override on all pages', BackgroundPage.RemoveOverrideAll);
+    }
+    else{
+	ChangeBtnState('overrideAll', 'Apply override to all pages', BackgroundPage.ApplyOverrideAll);
+    }
+}
+
+</script>
+</head>
+<body onLoad="DisplayButtons()">
+    <div>
+      <div id="pageOverriden" class="action_btn" onClick=""></div>
+      <div id="domainOverriden" class="action_btn" onClick=""></div>
+      <div id="overrideAll" class="action_btn" onClick=""></div>
+    </div>
+</body>
+</html>
