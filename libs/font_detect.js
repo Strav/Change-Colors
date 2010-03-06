@@ -87,7 +87,7 @@ function buildFontSelector(fontsArray){
 function buildFontSizeSelector(){
     var FontSizeSelectorString = '<select id="fontSize" name="fontSize" onchange="setFontSize(this.value);">'
     for(i = 1; i <= 32; i++){
-	FontSizeSelectorString += '<option value="' + i + '">' + i + '</option>'; 
+	FontSizeSelectorString += '<option id="fontSizeOption_'+ i +'" value="' + i + '">' + i + '</option>'; 
     }
     FontSizeSelectorString += '</select>';
     return FontSizeSelectorString;
@@ -116,12 +116,15 @@ function setFont(fontName){
     var sampleBlock = document.getElementById('sampleBlock');
     defaultFont.style.fontFamily = fontName;
     sampleBlock.style.fontFamily = fontName;
-    defaultFont.innerHTML = fontName;   
+    defaultFont.innerHTML = fontName;
+    saveOption("OverrideFontName", fontName);
 }
 
 function setFontSize(fontSize){
     var sampleBlock = document.getElementById('sampleBlock');
     sampleBlock.style.fontSize = fontSize + 'pt';
+    document.getElementById('fontSizeOption_' + fontSize).selected = true;
+    saveOption("FontSize", fontSize);
 }
 
 function removeFontStyleAttributes(){
@@ -130,17 +133,27 @@ function removeFontStyleAttributes(){
     sampleBlock.style.fontSize = '';
 }
 
+function hideFontOptions(){
+    hide('fontSelection'); 
+    hide('fontSizeRow'); 
+    removeFontStyleAttributes();    
+}
+
+function showFontOptions(){
+    show('fontSelection'); 
+    show('fontSizeRow'); 
+}
+
 function fontRadioDefault()
 {
-hide('fontSelection'); 
-hide('fontSizeRow'); 
-removeFontStyleAttributes();
+hideFontOptions();
+saveOption("DefaultBrowserFont", true);
 }
 
 function fontRadioOverride()
 {
-show('fontSelection'); 
-show('fontSizeRow'); 
+showFontOptions();
 setFontSize(document.getElementById('fontSize').value); 
-setFont(document.getElementById('defaultFont').innerHTML);
+setFont(document.getElementById('default_font').innerHTML);
+saveOption("DefaultBrowserFont", false);
 }

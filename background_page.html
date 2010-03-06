@@ -127,12 +127,24 @@ function updatePageAction(tabId){
     });
 }
 
+function saveOption(optionName, optionValue){
+    localStorage[optionName]  = JSON.stringify(optionValue);    
+}
+
+
 function setDefaults()
 {
-    localStorage["OverridenDomains"] = JSON.stringify(new Array());
-    localStorage["OverridenPages"]  = JSON.stringify(new Array());
-    localStorage["OverrideAll"]  = JSON.stringify(false);
-    localStorage["IsNotFirstStart"] = JSON.stringify(true);
+    saveOption("OverridenDomains", new Array());
+    saveOption("OverridenPages", new Array());
+    saveOption("OverrideAll", false);
+    saveOption("IsNotFirstStart", true);
+    saveOption("DefaultBrowserFont", true);
+    saveOption("text_color", "E8E8E8");
+    saveOption("background_color", "080808");
+    saveOption("links_color", "2E79DB")
+    saveOption("visited_links_color", "9B51DB");
+    saveOption("FontSize", "11");
+    saveOption("OverrideFontName", "Arial");
 }
 
 

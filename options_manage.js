@@ -1,10 +1,9 @@
-var Options = {"background_color" : ["color", ""], "links_color": ["color", ""], "text_color" : ["color", ""], "apply_to_all": ["check", ""], "enable_on_startup": ["check", ""]};
-
 function bindColor(elementId, attributeName, targetId){
     var element = document.getElementById(elementId);
     var value = element.value;
     var target = document.getElementById(targetId);
     target.style[attributeName] = '#' + value;
+    saveOption(elementId, value);
 }
 
 function hide(elementId){
@@ -17,57 +16,39 @@ function show(elementId){
     element.style.display = '';
 }
 
-
-function save_options() 
-{
-    for(key in Options)
-    {
-	switch(Options[key][0])
-	{
-	case "color":
-	    Options[key][1] = "#" + document.getElementById(key).value;
-	    break;
-	case "check":
-	    if(document.getElementById(key).checked == true)
-		Options[key][1] = "checked";
-	    else
-		Options[key][1] = "";
-	    break;
-	}
-	
-    }
-    localStorage["ColorOptions"]  = JSON.stringify(Options);
-    var status = document.getElementById("save_status");
-    status.innerHTML = "Options Saved.";
+function saveOption(optionName, optionValue){
+    localStorage[optionName]  = JSON.stringify(optionValue);    
 }
 
-function restore_options() 
-{	
-    var localOptions = JSON.parse(localStorage["ColorOptions"]);
-    for(key in localOptions)
-    {
-	optionValue = localOptions[key];
-	if(!optionValue)
-	    return;
-	else
-	{
-	    var element = document.getElementById(key);
-	    if(element)
-		{
-		    element.value = localOptions[key][1];
-		    switch(localOptions[key][0])
-		    {
-		    case "check":
-			if(localOptions[key][1] == "checked")
-			    element.checked = true;
-			else
-			    element.checked = false;
-			break;
-		    }
-		}
-	    else
-		return;
-	}	
+function loadOption(optionName){
+    return JSON.parse(localStorage[optionName]);   
+}
+
+function restoreOptionValue(elementId){
+    var value = loadOption(elementId);
+    var element = document.getElementById(elementId);
+    element.value = value;
+}
+
+function restoreOptions(){
+    setFontSize(loadOption("FontSize"));
+    setFont(loadOption("OverrideFontName"));
+    restoreOptionValue("text_color")
+    restoreOptionValue("background_color")
+    restoreOptionValue("links_color")
+    restoreOptionValue("visited_links_color")
+
+    if(loadOption("DefaultBrowserFont")){
+	document.getElementById("browserFontDefault").checked = true;
+	hideFontOptions();
     }
-    hideAndUncheckIf(!document.getElementById("apply_to_all").checked, "enable_on_startup_div", "enable_on_startup");
+    else{
+	document.getElementById("browserFontOverride").checked = true;
+	showFontOptions();
+    }
+    
+    bindColor('background_color', 'backgroundColor', 'sampleBlock');
+    bindColor('text_color', 'color', 'sampleBlock');
+    bindColor('links_color', 'color', 'link');
+    bindColor('visited_links_color', 'color', 'visited_link');
 }

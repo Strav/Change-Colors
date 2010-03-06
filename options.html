@@ -8,7 +8,7 @@
 <script type="text/javascript" src="options_manage.js"></script>
 <script type="text/javascript" src="libs/font_detect.js"></script>
 </head>
-<body onload="">
+<body onload="restoreOptions();">
   <div id="main_container">
     <div id="options_container">
       <h1>Adjust your color preferences:</h1>
@@ -18,9 +18,9 @@
 	    <span>Use Browser's font setting ?</span>
 	  </td>
 	  <td>
-	    Yes: <input type="radio" name="browser_font" value="true"
-			onClick="fontRadioDefault();" checked/>
-	    No: <input type="radio" name="browser_font" value="false"
+	    Yes: <input type="radio" id="browserFontDefault"  name="browser_font" value="true"
+			onClick="fontRadioDefault();"/>
+	    No: <input type="radio" id="browserFontOverride" name="browser_font" value="false"
 		       onClick="fontRadioOverride();"/>
 	  </td>
 	</tr>
