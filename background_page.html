@@ -1,7 +1,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"> 
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" lang="fr"> 
 <head>
+
 <script>
+
 
 var CssToInject;
 
@@ -18,6 +20,33 @@ var CurrentTabId;
 function loadOption(optionName){
     return JSON.parse(localStorage[optionName]);   
 }
+
+
+chrome.extension.onRequest.addListener(
+  function(request, sender, sendResponse) {
+      switch(request.shortCut){
+      case "overridePage":
+	  if(IsPageOverriden)
+	      RemovePageOverride();
+	  else
+	      ApplyPageOverride();
+	  break;
+      case "overrideDomain":
+	  if(IsDomainOverriden)
+	      RemoveDomainOverride();
+	  else
+	      ApplyDomainOverride();
+	  break;
+      case "overrideAll":
+	  if(IsOverrideAll)
+	      RemoveOverrideAll();
+	  else
+	      ApplyOverrideAll();
+	  break;
+      }
+  }
+);
+
 
 function buildCssToInject(){
 
