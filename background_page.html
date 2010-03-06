@@ -3,7 +3,7 @@
 <head>
 <script>
 
-var CssToInject = buildCssToInject();
+var CssToInject;
 
 var IsOverrideAll;
 var IsPageOverriden;
@@ -15,12 +15,45 @@ var OverrideAll;
 
 var CurrentTabId;
 
+function loadOption(optionName){
+    return JSON.parse(localStorage[optionName]);   
+}
+
 function buildCssToInject(){
-    return "html > body, html > * {background-color:red !important;} div[style]{background-color: green !important;}";
+
+    var backgroundColor = '#' + loadOption("background_color");
+    var textColor = '#' + loadOption("text_color");
+    var linksColor = '#' + loadOption("links_color");
+    var visitedLinksColor = '#' + loadOption("visited_links_color");
+    var fontName = loadOption("OverrideFontName");
+    var fontSize = loadOption("FontSize");
+    var defaultBrowserFont = loadOption("DefaultBrowserFont");
+
+    var css =  'html > body, html > body * {' + 
+               'background-color: '+ backgroundColor +' !important;' +
+	       'color: ' + textColor + ' !important;' + 
+               'text-shadow: 0 !important;' +
+               '-webkit-text-fill-color: none !important;}' +
+               'html > body, html > body *:not([onclick]):not(:link):not(:visited) {' +
+               'background-image: none !important;}' +
+               'html > body a:link, html > body a:link *,' +
+               'html > body a:link:hover, html > body a:link:hover *,' +
+               'html > body a:link:active, html > body a:link:active * {' +
+               'color: ' + linksColor + ' !important;}' +
+               'html > body a:visited, html > body a:visited *,' +
+               'html > body a:visited:hover, html > body a:visited:hover *,' +
+               'html > body a:visited:active, html > body a:visited:active * {' +
+               'color:' +  visitedLinksColor + ' !important;}';
+    if(defaultBrowserFont != true){
+	css += 'html > body, html > body * {' +
+               'font-family: '+ fontName  +' !important;'+ 
+	       'font-size: '+ fontSize +'pt }';
+    }
+    CssToInject = css;
 }
 
 function callInjectCss(){
-  chrome.tabs.sendRequest(CurrentTabId, {action: "injectCss", cssToInject: buildCssToInject()} , null);
+  chrome.tabs.sendRequest(CurrentTabId, {action: "injectCss", css: CssToInject} , null);
 }
 
 function callRemoveCss(){
@@ -163,7 +196,7 @@ else
 {
     getOverrides();
 }    
-
+buildCssToInject();
 chrome.tabs.onUpdated.addListener(updatePageAction);
 chrome.tabs.onSelectionChanged.addListener(updatePageAction);
 

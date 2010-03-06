@@ -1,15 +1,24 @@
 body
 {  
-  background-color: red;
+  background-color: #F7F7F7;
 }
 
 .action_btn
 {  
+  color: #191919;
   margin-top: 2px;
-  text-align: center;
-  font-size: 11px;
+  padding-top: 3px;
+  padding-left: 10px;
+  font-size: 10pt;
   width: 200px;
   height: 20px;
-  background-color: #ccc;
+  background-color: #F7F7F7;
+  border: 1px solid #CFCFCF;
   cursor:pointer;
+}
+
+.action_btn:hover
+{  
+  color: #fff;
+  background-image: url("../icons/overrideSelection.jpg");
 }

@@ -13,7 +13,7 @@ function removeCss(){
 
 chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
     if (request.action == "injectCss") {
-	injectCss(request.cssToInject);
+	injectCss(request.css);
     } else if (request.action == "removeCss") {
 	removeCss();
     }

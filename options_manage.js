@@ -17,7 +17,9 @@ function show(elementId){
 }
 
 function saveOption(optionName, optionValue){
-    localStorage[optionName]  = JSON.stringify(optionValue);    
+    localStorage[optionName]  = JSON.stringify(optionValue);
+    var backgroundPage = chrome.extension.getBackgroundPage();
+    backgroundPage.buildCssToInject();
 }
 
 function loadOption(optionName){
