@@ -1,22 +1,5 @@
+
 var Options = {"background_color" : ["color", ""], "links_color": ["color", ""], "text_color" : ["color", ""], "apply_to_all": ["check", ""], "enable_on_startup": ["check", ""]};
-
-function bindColor(elementId, attributeName, targetId){
-    var element = document.getElementById(elementId);
-    var value = element.value;
-    var target = document.getElementById(targetId);
-    target.style[attributeName] = '#' + value;
-}
-
-function hide(elementId){
-    var element = document.getElementById(elementId);
-    element.style.display = 'none';
-}
-
-function show(elementId){
-    var element = document.getElementById(elementId);
-    element.style.display = '';
-}
-
 
 function save_options() 
 {
@@ -71,3 +54,5 @@ function restore_options()
     }
     hideAndUncheckIf(!document.getElementById("apply_to_all").checked, "enable_on_startup_div", "enable_on_startup");
 }
+
+

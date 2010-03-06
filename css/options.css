@@ -8,18 +8,23 @@ body
 
 #save_status
 {
-		padding: 5px;
-		color: green;
-		float: right;
+  padding: 5px;
+  color: green;
+  float: right;
 }
 
 
 .settings-table
 { 
-  width: 400px;
+  width: 500px;
   padding: 10px;
   border: solid 1px #ccc;
  }
+
+.option_name
+{ 
+  width: 175px;
+}
 
 .color
 { 
@@ -43,6 +48,49 @@ h1
 { 
   margin-left: auto;
   margin-right: auto;
-  width: 400px;
+  width: 800px;
   padding-top: 100px;
  }
+
+#options_container
+{  
+  float:left;
+}
+
+#fontSelectorBtn
+{  
+  text-decoration: underline;
+  color: #2342DB;
+  cursor: pointer;
+}
+
+.FontsContainer
+{  
+  overflow: auto;
+  background-color: #ddd;
+  height: 150px;
+  width: 250px;
+  
+}
+
+.SingleFontDiv
+{ 
+  border: 1px solid #ccc;
+  cursor:pointer;
+  padding: 3px;
+  font-size: 14px;
+}
+
+#sampleBlock
+{
+  margin-left: 20px;
+  margin-top: 45px;
+  float: left;
+  overflow: auto;
+  width: 200px;
+  height: 250px;
+  padding: 15px;
+  background-color: #ccc;
+  border-left: 1px solid #ddd;
+  border-bottom: 1px solid #ddd;
+}

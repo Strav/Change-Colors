@@ -6,43 +6,102 @@
 
 <link rel="stylesheet" type="text/css" href="css/options.css" />
 <script type="text/javascript" src="options_manage.js"></script>
-
+<script type="text/javascript" src="libs/font_detect.js"></script>
 </head>
-<body onload="restore_options();">
-<div id="main_container">
-  <h1>Adjust your color preferences:</h1>
-  <table cellpadding="5" class="settings-table">
-    <tr>
-      <td>
-	<span>Background color:</span>
-      </td>
-      <td>
-	<input class="color" id="background_color" value="0F0F0F">
-      </td>
-    </tr>
-    <tr>
-      <td>
-	<span>Text color:</span>
-      </td>
-      <td>
-	<input class="color" id="text_color" value="EDEDED">      
-      </td>
-    </tr>
-    <tr>
-      <td>
-	<span>Links color:</span>      
-      </td>
-      <td>
-	<input class="color" id="links_color" value="42ADDB">            
-      </td>
-    </tr>
-  </table>
-  <br />
+<body onload="">
+  <div id="main_container">
+    <div id="options_container">
+      <h1>Adjust your color preferences:</h1>
+      <table cellpadding="5" class="settings-table">
+	<tr>
+	  <td>
+	    <span>Use Browser's font setting ?</span>
+	  </td>
+	  <td>
+	    Yes: <input type="radio" name="browser_font" value="true"
+			onClick="fontRadioDefault();" checked/>
+	    No: <input type="radio" name="browser_font" value="false"
+		       onClick="fontRadioOverride();"/>
+	  </td>
+	</tr>
+	<tr id="fontSelection" style="display: none;">
+	  <td class="option_name">
+	    <span>Replacement font:</span>
+	  </td>
+	  <td>
+	    <span id="default_font">Arial</span>&nbsp;
+	    <span id="fontSelectorBtn" onClick="showFonts();">(Select
+	      another font)</span>
+	    <div id="fontSelector" style="display: none;">
+	      <br />
+	      <script type="text/javascript">
+		<!--
+		   document.write(buildFontSelector(fonts));
+		   // -->
+	      </script>
+	    </div>
+	  </td>
+	</tr>
+	<tr id="fontSizeRow" style="display: none;">
+	  <td>
+	    Replacement font size:
+	  </td>
+	  <td>
+	      <script type="text/javascript">
+		<!--
+		   document.write(buildFontSizeSelector());
+		   // -->
+	      </script>
+	  </td>
+	</tr>
+	<tr>
+	  <td class="option_name">
+	    <span>Background color:</span>
+	  </td>
+	  <td>
+	    <input class="color" id="background_color" value="0F0F0F"
+		   onchange="bindColor('background_color',
+			     'backgroundColor', 'sampleBlock')"/>
+	  </td>
+	</tr>
+	<tr>
+	  <td class="option_name">
+	    <span>Text color:</span>
+	  </td>
+	  <td>
+	    <input class="color" id="text_color" value="EDEDED"
+		   onchange="bindColor('text_color', 'color', 'sampleBlock')"/>
+	  </td>
+	</tr>
+	<tr>
+	  <td class="option_name">
+	    <span>Links color:</span>      
+	  </td>
+	  <td>
+	    <input class="color" id="links_color" value="42ADDB"
+		   onchange="bindColor('links_color', 'color', 'link')"/>
+	  </td>
+	</tr>
+	<tr>
+	  <td class="option_name">
+	    <span>Visited links color:</span>      
+	  </td>
+	  <td>
+	    <input class="color" id="visited_links_color" value="5B3BDB"
+		   onchange="bindColor('visited_links_color', 'color', 'visited_link')"/>
+	  </td>
+	</tr>
+      </table>
+      <br />
+      <span id="save_status"></span>
+      <br />
+    </div>
+    <div id="sampleBlock">
+      There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. 
+      <a id="link" href="">this is a standard link</a>
+      <a id="visited_link" href="">this is a visited link</a>
+    </div>
   </div>
-  <span id="save_status"></span>
-  <br />
-  <input type="button" name="save_settings" value="Save Settings" id="save_settings" onClick="save_options();"/>
-</div>
 </body>
-<script type="text/javascript" src="jscolor/jscolor.js"></script>
+<script type="text/javascript" src="libs/jscolor/jscolor.js"></script>
 </html>
