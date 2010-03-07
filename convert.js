@@ -255,6 +255,6 @@ shortcut.add("Ctrl+Shift+D",function() {
     chrome.extension.sendRequest({shortCut: "overrideDomain"}, function(response){});
 });
 
-shortcut.add("Ctrl+Shift+O",function() {
+shortcut.add("Ctrl+Shift+G",function() {
     chrome.extension.sendRequest({shortCut: "overrideAll"}, function(response){});    
 });
