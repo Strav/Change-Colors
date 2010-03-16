@@ -44,6 +44,16 @@ body
   width: 220px;
 }
 
+.group_option
+{  
+  font-weight: bold;
+}
+
+.group_option_row
+{  
+  height: 50px;
+}
+
 .color
 { 
   width: 60px;

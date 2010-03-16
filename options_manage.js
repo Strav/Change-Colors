@@ -16,6 +16,23 @@ function show(elementId){
     element.style.display = '';
 }
 
+function colorRadioDefault(){
+    hide("background_color_row");
+    hide("text_color_row");
+    hide("links_color_row");
+    hide("visited_links_color_row");
+    saveOption("DefaultBrowserColor", true);
+}
+
+function colorRadioOverride(){
+    show("background_color_row");
+    show("text_color_row");
+    show("links_color_row");
+    show("visited_links_color_row");
+    saveOption("DefaultBrowserColor", false);
+}
+
+
 function saveOption(optionName, optionValue){
     localStorage[optionName]  = JSON.stringify(optionValue);
     var backgroundPage = chrome.extension.getBackgroundPage();
@@ -32,6 +49,17 @@ function restoreOptionValue(elementId){
     element.value = value;
 }
 
+function radioCheck(optionName, defaultElementId, overrideElementId, defFunction, overrideFunction ){
+    if(loadOption(optionName)){
+	document.getElementById(defaultElementId).checked = true;
+	defFunction();
+    }
+    else{
+	document.getElementById(overrideElementId).checked = true;
+	overrideFunction();
+    }
+}
+
 function restoreOptions(){
     setFontSize(loadOption("FontSize"));
     setFont(loadOption("OverrideFontName"));
@@ -39,16 +67,8 @@ function restoreOptions(){
     restoreOptionValue("background_color")
     restoreOptionValue("links_color")
     restoreOptionValue("visited_links_color")
-
-    if(loadOption("DefaultBrowserFont")){
-	document.getElementById("browserFontDefault").checked = true;
-	hideFontOptions();
-    }
-    else{
-	document.getElementById("browserFontOverride").checked = true;
-	showFontOptions();
-    }
-    
+    radioCheck("DefaultBrowserFont", "browserFontDefault", "browserFontOverride", fontRadioDefault, fontRadioOverride);
+    radioCheck("DefaultBrowserColor", "browserColorDefault", "browserColorOverride", colorRadioDefault, colorRadioOverride);
     bindColor('background_color', 'backgroundColor', 'sampleBlock');
     bindColor('text_color', 'color', 'sampleBlock');
     bindColor('links_color', 'color', 'link');

@@ -57,7 +57,9 @@ function buildCssToInject(){
     var fontName = loadOption("OverrideFontName");
     var fontSize = loadOption("FontSize");
     var defaultBrowserFont = loadOption("DefaultBrowserFont");
+    var defaultBrowserColor = loadOption("DefaultBrowserColor");
 
+    if(defaultBrowserColor != true){
     var css =  'html > body, html > body * {' + 
                'background-color: '+ backgroundColor +' !important;' +
 	       'color: ' + textColor + ' !important;' + 
@@ -73,6 +75,7 @@ function buildCssToInject(){
                'html > body a:visited:hover, html > body a:visited:hover *,' +
                'html > body a:visited:active, html > body a:visited:active * {' +
                'color:' +  visitedLinksColor + ' !important;}';
+    }
     if(defaultBrowserFont != true){
 	css += 'html > body, html > body * {' +
                'font-family: '+ fontName  +' !important;'+ 
@@ -201,6 +204,7 @@ function setDefaults()
     saveOption("OverrideAll", false);
     saveOption("IsNotFirstStart", true);
     saveOption("DefaultBrowserFont", true);
+    saveOption("DefaultBrowserColor", false);
     saveOption("text_color", "E8E8E8");
     saveOption("background_color", "080808");
     saveOption("links_color", "2E79DB")
