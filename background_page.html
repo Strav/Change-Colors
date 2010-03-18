@@ -58,6 +58,7 @@ function buildCssToInject(){
     var fontSize = loadOption("FontSize");
     var defaultBrowserFont = loadOption("DefaultBrowserFont");
     var defaultBrowserColor = loadOption("DefaultBrowserColor");
+    var showImages = loadOption("ShowImage");
 
     if(defaultBrowserColor != true){
     var css =  'html > body, html > body * {' + 
@@ -80,6 +81,9 @@ function buildCssToInject(){
 	css += 'html > body, html > body * {' +
                'font-family: '+ fontName  +' !important;'+ 
 	       'font-size: '+ fontSize +'pt }';
+    }
+    if (!showImages) {
+	css += 'html > body img { display:none !important; }';
     }
     CssToInject = css;
 }
@@ -210,6 +214,7 @@ function setDefaults()
     saveOption("links_color", "2E79DB");
     saveOption("visited_links_color", "9B51DB");
     saveOption("FontSize", "11");
+    saveOption("ShowImage", true);
     saveOption("OverrideFontName", "Arial");
 }
 
