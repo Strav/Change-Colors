@@ -207,7 +207,7 @@ function setDefaults()
     saveOption("DefaultBrowserColor", false);
     saveOption("text_color", "E8E8E8");
     saveOption("background_color", "080808");
-    saveOption("links_color", "2E79DB")
+    saveOption("links_color", "2E79DB");
     saveOption("visited_links_color", "9B51DB");
     saveOption("FontSize", "11");
     saveOption("OverrideFontName", "Arial");
@@ -228,7 +228,8 @@ if(localStorage["IsNotFirstStart"] == undefined){
 else
 {
     getOverrides();
-}    
+}
+
 buildCssToInject();
 chrome.tabs.onUpdated.addListener(updatePageAction);
 chrome.tabs.onSelectionChanged.addListener(updatePageAction);

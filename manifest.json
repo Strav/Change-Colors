@@ -24,7 +24,8 @@
    ],
   "minimum_chrome_version": "4.0",
   "options_page": "options.html",
-
+//  For testing updates backward compatibility.
+//  "update_url": "http://strav/ChangeColors/updates.xml",
   "permissions": 
   [
   "tabs",
