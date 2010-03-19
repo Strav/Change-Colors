@@ -201,21 +201,27 @@ function saveOption(optionName, optionValue){
 }
 
 
+function setDefaultOption(optionName, value){
+    if(localStorage[optionName] == undefined){
+	saveOption(optionName, value);
+    }
+}
+
 function setDefaults()
 {
-    saveOption("OverridenDomains", new Array());
-    saveOption("OverridenPages", new Array());
-    saveOption("OverrideAll", false);
-    saveOption("IsNotFirstStart", true);
-    saveOption("DefaultBrowserFont", true);
-    saveOption("DefaultBrowserColor", false);
-    saveOption("text_color", "E8E8E8");
-    saveOption("background_color", "080808");
-    saveOption("links_color", "2E79DB");
-    saveOption("visited_links_color", "9B51DB");
-    saveOption("FontSize", "11");
-    saveOption("ShowImage", true);
-    saveOption("OverrideFontName", "Arial");
+    setDefaultOption("OverridenDomains", new Array());
+    setDefaultOption("OverridenPages", new Array());
+    setDefaultOption("OverrideAll", false);
+    setDefaultOption("IsNotFirstStart", true);
+    setDefaultOption("DefaultBrowserFont", true);
+    setDefaultOption("DefaultBrowserColor", false);
+    setDefaultOption("text_color", "E8E8E8");
+    setDefaultOption("background_color", "080808");
+    setDefaultOption("links_color", "2E79DB");
+    setDefaultOption("visited_links_color", "9B51DB");
+    setDefaultOption("FontSize", "11");
+    setDefaultOption("ShowImage", true);
+    setDefaultOption("OverrideFontName", "Arial");
 }
 
 
@@ -226,15 +232,8 @@ function getOverrides()
     IsOverrideAll = JSON.parse(localStorage["OverrideAll"]);
 }
 
-if(localStorage["IsNotFirstStart"] == undefined){
-    setDefaults();
-    getOverrides();
-}
-else
-{
-    getOverrides();
-}
-
+setDefaults();
+getOverrides();
 buildCssToInject();
 chrome.tabs.onUpdated.addListener(updatePageAction);
 chrome.tabs.onSelectionChanged.addListener(updatePageAction);
