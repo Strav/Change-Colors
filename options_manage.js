@@ -49,18 +49,14 @@ function restoreOptionValue(elementId){
     element.value = value;
 }
 
-function radioCheck(optionName, defaultElementId, overrideElementId, defFunction, overrideFunction ){
+function radioCheck(optionName, defaultElementId, overrideElementId){
     if(loadOption(optionName)){
 	document.getElementById(defaultElementId).checked = true;
-	if(defFunction != undefined){
-	    defFunction();
-	}
+	document.getElementById(defaultElementId).onclick();
     }
     else{
 	document.getElementById(overrideElementId).checked = true;
-	if(overrideFunction != undefined){
-	    overrideFunction();
-	}
+	document.getElementById(overrideElementId).onclick();
     }
 }
 
@@ -71,8 +67,8 @@ function restoreOptions(){
     restoreOptionValue("background_color")
     restoreOptionValue("links_color")
     restoreOptionValue("visited_links_color")
-    radioCheck("DefaultBrowserFont", "browserFontDefault", "browserFontOverride", fontRadioDefault, fontRadioOverride);
-    radioCheck("DefaultBrowserColor", "browserColorDefault", "browserColorOverride", colorRadioDefault, colorRadioOverride);
+    radioCheck("DefaultBrowserFont", "browserFontDefault", "browserFontOverride");
+    radioCheck("DefaultBrowserColor", "browserColorDefault", "browserColorOverride");
     radioCheck("ShowImage", "showImageDefault", "showImageOverride");
     bindColor('background_color', 'backgroundColor', 'sampleBlock');
     bindColor('text_color', 'color', 'sampleBlock');

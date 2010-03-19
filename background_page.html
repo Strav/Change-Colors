@@ -207,8 +207,7 @@ function setDefaultOption(optionName, value){
     }
 }
 
-function setDefaults()
-{
+function setDefaults(){
     setDefaultOption("OverridenDomains", new Array());
     setDefaultOption("OverridenPages", new Array());
     setDefaultOption("OverrideAll", false);
@@ -225,8 +224,7 @@ function setDefaults()
 }
 
 
-function getOverrides()
-{
+function getOverrides(){
     OverridenDomains = JSON.parse(localStorage["OverridenDomains"]);
     OverridenPages = JSON.parse(localStorage["OverridenPages"]);
     IsOverrideAll = JSON.parse(localStorage["OverrideAll"]);
