@@ -30,6 +30,19 @@ var BackgroundPage = chrome.extension.getBackgroundPage();
     }
 
     if(BackgroundPage.IsOverrideAll){
+	if(BackgroundPage.IsNotPageOverriden){
+	    ChangeBtnState('pageOverriden', 'Global override on this page', BackgroundPage.RemoveNoPageOverride);
+	}
+	else{
+	    ChangeBtnState('pageOverriden', 'No global override on this page', BackgroundPage.ApplyNoPageOverride);
+	}
+
+	if(BackgroundPage.IsNotDomainOverriden){
+	    ChangeBtnState('domainOverriden', 'Global override on this domain', BackgroundPage.RemoveNoDomainOverride);
+	}
+	else{
+	    ChangeBtnState('domainOverriden', 'No global override on this domain', BackgroundPage.ApplyNoDomainOverride);
+	}
 	ChangeBtnState('overrideAll', 'Remove override on all pages', BackgroundPage.RemoveOverrideAll);
     }
     else{

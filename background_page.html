@@ -10,9 +10,14 @@ var CssToInject;
 var IsOverrideAll;
 var IsPageOverriden;
 var IsDomainOverriden;
+var IsNotPageOverriden;
+var IsNotDomainOverriden;
 
 var OverridenDomains = new Array();
 var OverridenPages = new Array();
+var NotOverridenDomains = new Array();
+var NotOverridenPages = new Array();
+
 var OverrideAll;
 
 var CurrentTabId;
@@ -108,6 +113,14 @@ function checkIfPageOverriden(path){
     IsPageOverriden = OverridenPages.indexOf(path) != -1;
 }
 
+function checkIfNotDomainOverriden(domain){    
+    IsNotDomainOverriden = NotOverridenDomains.indexOf(domain) != -1;
+}
+
+function checkIfNotPageOverriden(path){
+    IsNotPageOverriden = NotOverridenPages.indexOf(path) != -1;
+}
+
 function checkIfOverrideAll(){
     return IsOverrideAll;
 }
@@ -121,6 +134,16 @@ function RemovePageOverride(){
     callRemoveCss();
 }
 
+function RemoveNoPageOverride(){
+    chrome.tabs.get(CurrentTabId, function (tab){
+	NotOverridenPages.splice(OverridenPages.indexOf(tab.url),1);
+	localStorage["NotOverridenPages"]  = JSON.stringify(OverridenPages);
+    });    
+    IsNotPageOverriden = false;
+    callInjectCss();
+}
+
+
 function RemoveDomainOverride(){
     chrome.tabs.get(CurrentTabId, function (tab){
 	domain = extractDomain(tab.url);
@@ -130,6 +153,17 @@ function RemoveDomainOverride(){
     IsDomainOverriden = false;
     callRemoveCss();
 }
+
+function RemoveNoDomainOverride(){
+    chrome.tabs.get(CurrentTabId, function (tab){
+	domain = extractDomain(tab.url);
+	NotOverridenDomains.splice(NotOverridenDomains.indexOf(domain),1);
+	localStorage["NotOverridenDomains"]  = JSON.stringify(OverridenPages);
+    });
+    IsNotDomainOverriden = false;
+    callInjectCss();
+}
+
 
 function RemoveOverrideAll(){
     localStorage["OverrideAll"]  = JSON.stringify(false);
@@ -146,6 +180,16 @@ function ApplyPageOverride(){
     callInjectCss();
 }
 
+function ApplyNoPageOverride(){
+    chrome.tabs.get(CurrentTabId, function (tab){
+	NotOverridenPages.push(tab.url)	
+	localStorage["NotOverridenPages"]  = JSON.stringify(NotOverridenPages);
+    });
+    IsNotPageOverriden = true;
+    callRemoveCss();
+}
+
+
 function ApplyDomainOverride(){
     chrome.tabs.get(CurrentTabId, function (tab){
 	OverridenDomains.push(extractDomain(tab.url))	
@@ -153,6 +197,15 @@ function ApplyDomainOverride(){
     });
     IsDomainOverriden = true;
     callInjectCss();
+}
+
+function ApplyNoDomainOverride(){
+    chrome.tabs.get(CurrentTabId, function (tab){
+	NotOverridenDomains.push(extractDomain(tab.url))	
+	localStorage["NotOverridenDomains"]  = JSON.stringify(NotOverridenDomains);
+    });
+    IsNotDomainOverriden = true;
+    callRemoveCss();
 }
 
 function ApplyOverrideAll(){
@@ -164,9 +217,11 @@ function ApplyOverrideAll(){
 function IsStyleOverriden(url){
     var domain = extractDomain(url);
     checkIfOverrideAll();
+    checkIfNotPageOverriden(url);
+    checkIfNotDomainOverriden(domain);
     checkIfPageOverriden(url);
     checkIfDomainOverriden(domain);
-    return IsDomainOverriden || IsPageOverriden || IsOverrideAll;
+    return (IsOverrideAll && !(IsNotPageOverriden || IsNotDomainOverriden)) || IsPageOverriden || IsDomainOverriden;
 }
 
 
@@ -210,6 +265,8 @@ function setDefaultOption(optionName, value){
 function setDefaults(){
     setDefaultOption("OverridenDomains", new Array());
     setDefaultOption("OverridenPages", new Array());
+    setDefaultOption("NotOverridenDomains", new Array());
+    setDefaultOption("NotOverridenPages", new Array());
     setDefaultOption("OverrideAll", false);
     setDefaultOption("IsNotFirstStart", true);
     setDefaultOption("DefaultBrowserFont", true);
