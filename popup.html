@@ -6,47 +6,57 @@
 
 
 
-function ChangeBtnState(BtnId, BtnText, BindFunction)
-{
+function ChangeBtnState(BtnId, BtnText, BindFunction, overrideType, path, blnOverriden, overrideFn){
     var btn = document.getElementById(BtnId);
     btn.innerHTML = BtnText;
-    btn.onclick = function(){BindFunction.call(); DisplayButtons();};
+    if(path != null){
+	btn.onclick = function(){BindFunction.call(overrideType, path); DisplayButtons();};
+    }
+    else{
+	btn.onclick = function(){BindFunction.call(overrideType, blnOverriden, overrideFn); DisplayButtons();};
+    }	
 }
 
 function DisplayButtons(){
-var BackgroundPage = chrome.extension.getBackgroundPage();
-    if(BackgroundPage.IsPageOverriden){
-	ChangeBtnState('pageOverriden', 'Remove override on this page', BackgroundPage.RemovePageOverride);
+    var BackgroundPage = chrome.extension.getBackgroundPage();
+    var objPage = BackgroundPage.objCurrentPage;
+    var objPageOverrides = BackgroundPage.objCurrentPage.blnOverrides;
+    var currentUrl = objPage.Url;
+    var currentDomain = objPage.Domain;
+    
+    
+    if(objPageOverrides['OverridenPages']){
+	ChangeBtnState('pageOverriden', 'Remove override on this page', objPage.removeOverride, 'OverridenPages', currentUrl);
     }
     else{
-	ChangeBtnState('pageOverriden', 'Apply override on this page', BackgroundPage.ApplyPageOverride);
+	ChangeBtnState('pageOverriden', 'Apply override on this page', objPage.applyOverride, 'OverridenPages', currentUrl);
     }
     
-    if(BackgroundPage.IsDomainOverriden){
-	ChangeBtnState('domainOverriden', 'Remove override on this domain', BackgroundPage.RemoveDomainOverride);
+    if(objPageOverrides['OverridenDomains']){
+	ChangeBtnState('domainOverriden', 'Remove override on this domain', objPage.removeOverride, 'OverridenDomains', currentDomain);
     }
     else{
-	ChangeBtnState('domainOverriden', 'Apply override on this domain', BackgroundPage.ApplyDomainOverride);
+	ChangeBtnState('domainOverriden', 'Apply override on this domain', objPage.applyOverride, 'OverridenDomains', currentDomain);
     }
 
-    if(BackgroundPage.IsOverrideAll){
+    if(objPageOverrides.OverrideAll){
 	if(BackgroundPage.IsNotPageOverriden){
-	    ChangeBtnState('pageOverriden', 'Global override on this page', BackgroundPage.RemoveNoPageOverride);
+	    ChangeBtnState('pageOverriden', 'Global override on this page', objPage.removeOverride, 'NotOverridenPages', currentUrl);
 	}
 	else{
-	    ChangeBtnState('pageOverriden', 'No global override on this page', BackgroundPage.ApplyNoPageOverride);
+	    ChangeBtnState('pageOverriden', 'No global override on this page', objPage.applyOverride, 'NotOverridenPages', currentUrl);
 	}
 
 	if(BackgroundPage.IsNotDomainOverriden){
-	    ChangeBtnState('domainOverriden', 'Global override on this domain', BackgroundPage.RemoveNoDomainOverride);
+	    ChangeBtnState('domainOverriden', 'Global override on this domain', objPage.removeOverride, 'NotOverridenDomains', currentDomain);
 	}
 	else{
-	    ChangeBtnState('domainOverriden', 'No global override on this domain', BackgroundPage.ApplyNoDomainOverride);
+	    ChangeBtnState('domainOverriden', 'No global override on this domain', objPage.applyOverride, 'NotOverridenDomains', currentDomain);
 	}
-	ChangeBtnState('overrideAll', 'Remove override on all pages', BackgroundPage.RemoveOverrideAll);
+	ChangeBtnState('overrideAll', 'Remove override on all pages', objPage.removeOverride, null, false, objPage.callRemoveCss);
     }
     else{
-	ChangeBtnState('overrideAll', 'Apply override to all pages', BackgroundPage.ApplyOverrideAll);
+	ChangeBtnState('overrideAll', 'Apply override to all pages', objPage.applyOverride, null, true, objPage.callInjectCss);
     }
 }
 
