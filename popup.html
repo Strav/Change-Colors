@@ -10,10 +10,11 @@ function ChangeBtnState(BtnId, BtnText, BindFunction, overrideType, path, blnOve
     var btn = document.getElementById(BtnId);
     btn.innerHTML = BtnText;
     if(path != null){
-	btn.onclick = function(){BindFunction.call(overrideType, path); DisplayButtons();};
+	console.log(path);
+	btn.onclick = function(){BindFunction.call(this, overrideType, path); DisplayButtons();};
     }
     else{
-	btn.onclick = function(){BindFunction.call(overrideType, blnOverriden, overrideFn); DisplayButtons();};
+	btn.onclick = function(){BindFunction.call(this, overrideType, blnOverriden, overrideFn); DisplayButtons();};
     }	
 }
 

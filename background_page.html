@@ -3,7 +3,6 @@
 <head>
 
 <script>
-var me;
 
 function CurrentPage ()
 {
@@ -26,7 +25,7 @@ function CurrentPage ()
     me.Domain;
 
     me.setLocation = function (){
-	chrome.tabs.getSelected(null, function (tab){
+	chrome.tabs.get(me.CurrentTabId, function (tab){
 	    me.Url = tab.url;
 	    me.Domain = extractDomain(tab.url);
 	});
@@ -50,7 +49,7 @@ function CurrentPage ()
     }
 
     me.setIsOverridenOrNot =  function (path, overrideType){
-	me.blnOverrides[overrideType] = me.Overrides[overrideType].indexOf(path) != 1;
+	me.blnOverrides[overrideType] = me.Overrides[overrideType].indexOf(path) != -1;
     }
 
     me.applyOverride = function (overrideType, path){
@@ -74,6 +73,8 @@ function CurrentPage ()
 	me.setIsOverridenOrNot(me.Domain, 'NotOverridenDomains');
 	me.setIsOverridenOrNot(me.Url, 'OverridenPages');
 	me.setIsOverridenOrNot(me.Url, 'OverridenDomains');
+	me.blnOverrides['OverrideAll'] = loadOption('OverrideAll');
+	console.log((me.blnOverrides['OverrideAll'] && !(me.blnOverrides['NotOverridenPages'] || me.blnOverrides['NotOverridenDomains'])) || me.blnOverrides['OverridenPages'] || me.blnOverrides['OverridenDomains']);
 	return (me.blnOverrides['OverrideAll'] && !(me.blnOverrides['NotOverridenPages'] || me.blnOverrides['NotOverridenDomains'])) || me.blnOverrides['OverridenPages'] || me.blnOverrides['OverridenDomains'];
     }
 
@@ -96,6 +97,7 @@ function CurrentPage ()
     }
 
     me.updatePageAction = function(tabId){
+	me.CurrentTabId = tabId;
 	me.setLocation();
 	if(me.isStyleOverriden(me.Url)){	    
 	    me.callInjectCss();
