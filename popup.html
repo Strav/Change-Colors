@@ -47,10 +47,10 @@ function DisplayButtons(){
 	else{
 	    ChangeBtnState('domainOverriden', 'No global override on this domain', 'NotOverridenDomains', true, currentDomain, 'add', objCurrentPage.callRemoveCss);
 	}
-	ChangeBtnState('overrideAll', 'Remove override on all pages', 'OverrideAll', false, false, null, objCurrentPage.callRemoveCss);
+	ChangeBtnState('overrideAll', 'Remove override on all pages', 'OverrideAll', false, false, 'set', objCurrentPage.callRemoveCss);
     }
     else{
-	ChangeBtnState('overrideAll', 'Apply override on all pages', 'OverrideAll', true, true, null, objCurrentPage.callInjectCss);
+	ChangeBtnState('overrideAll', 'Apply override on all pages', 'OverrideAll', true, true, 'set', objCurrentPage.callInjectCss);
     }
 }
 

@@ -44,19 +44,18 @@ function CurrentPage ()
 	me.blnOverrides[overrideType] = me.Overrides[overrideType].indexOf(path) != -1;
     }
 
-    me.manageOverride = function (overrideType, blnValue, localStorageValue, addOrRemove, CSSfn){
-	if(overrideType != 'OverrideAll'){
-	    if(addOrRemove == 'add'){
-		me.Overrides[overrideType].push(localStorageValue);
-	    }
-	    else{
-		me.Overrides[overrideType].splice(me.Overrides[overrideType].indexOf(localStorageValue),1);
-	    }
-	}
-	else{
+    me.manageOverride = function (overrideType, blnValue, localStorageValue, action, CSSfn){
+	switch(action){
+	case 'add':
+	    me.Overrides[overrideType].push(localStorageValue);
+	    break;
+	case 'remove':
+	    me.Overrides[overrideType].splice(me.Overrides[overrideType].indexOf(localStorageValue),1);
+	    break;
+	case 'set':
 	    me.Overrides[overrideType] = localStorageValue;
+	    break;
 	}
-
 	localStorage[overrideType]  = JSON.stringify(me.Overrides[overrideType]);
 	me.blnOverrides[overrideType] = blnValue;
 	CSSfn();
@@ -201,9 +200,9 @@ chrome.extension.onRequest.addListener(
 	  break;
       case "overrideAll":
 	  if(IsOverrideAll)
-	      objCurrentPage.manageOverride('OverrideAll', false, false, null, me.callRemoveCss);
+	      objCurrentPage.manageOverride('OverrideAll', false, false, 'set', me.callRemoveCss);
 	  else
-	      objCurrentPage.manageOverride('OverrideAll', true, true, null, me.callInjectCss);
+	      objCurrentPage.manageOverride('OverrideAll', true, true, 'set', me.callInjectCss);
 	  break;
       }
   }
