@@ -2,62 +2,55 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"> 
 <head>
 <link rel="stylesheet" type="text/css" href="css/pop_up.css" /> 
-<script>
+<script type="text/javascript">
 
+var BackgroundPage = chrome.extension.getBackgroundPage();
+var objCurrentPage = BackgroundPage.objCurrentPage;
 
-
-function ChangeBtnState(BtnId, BtnText, BindFunction, overrideType, path, blnOverriden, overrideFn){
+function ChangeBtnState(BtnId, BtnText, overrideType, blnOverriden, localStorageValue, addOrRemove, overrideFn){
     var btn = document.getElementById(BtnId);
     btn.innerHTML = BtnText;
-    if(path != null){
-	console.log(path);
-	btn.onclick = function(){BindFunction.call(this, overrideType, path); DisplayButtons();};
-    }
-    else{
-	btn.onclick = function(){BindFunction.call(this, overrideType, blnOverriden, overrideFn); DisplayButtons();};
-    }	
+    btn.onclick = function(){objCurrentPage.manageOverride.call(this, overrideType, blnOverriden, localStorageValue, addOrRemove, overrideFn); DisplayButtons();};
 }
 
 function DisplayButtons(){
-    var BackgroundPage = chrome.extension.getBackgroundPage();
-    var objPage = BackgroundPage.objCurrentPage;
+
     var objPageOverrides = BackgroundPage.objCurrentPage.blnOverrides;
-    var currentUrl = objPage.Url;
-    var currentDomain = objPage.Domain;
-    
+    var currentUrl = objCurrentPage.Url;
+    var currentDomain = objCurrentPage.Domain;
     
     if(objPageOverrides['OverridenPages']){
-	ChangeBtnState('pageOverriden', 'Remove override on this page', objPage.removeOverride, 'OverridenPages', currentUrl);
+	ChangeBtnState('pageOverriden', 'Remove override on this page', 'OverridenPages', false, currentUrl, 'remove', objCurrentPage.callRemoveCss);
     }
     else{
-	ChangeBtnState('pageOverriden', 'Apply override on this page', objPage.applyOverride, 'OverridenPages', currentUrl);
+	ChangeBtnState('pageOverriden', 'Apply override on this page', 'OverridenPages', true, currentUrl, 'add', objCurrentPage.callInjectCss);
     }
     
     if(objPageOverrides['OverridenDomains']){
-	ChangeBtnState('domainOverriden', 'Remove override on this domain', objPage.removeOverride, 'OverridenDomains', currentDomain);
+	ChangeBtnState('domainOverriden', 'Remove override on this domain', 'OverridenDomains', false, currentDomain, 'remove', objCurrentPage.callRemoveCss);
     }
     else{
-	ChangeBtnState('domainOverriden', 'Apply override on this domain', objPage.applyOverride, 'OverridenDomains', currentDomain);
+	ChangeBtnState('domainOverriden', 'Apply override on this domain', 'OverridenDomains', true, currentDomain, 'add', objCurrentPage.callInjectCss);
     }
 
-    if(objPageOverrides.OverrideAll){
-	if(BackgroundPage.IsNotPageOverriden){
-	    ChangeBtnState('pageOverriden', 'Global override on this page', objPage.removeOverride, 'NotOverridenPages', currentUrl);
+    if(objPageOverrides['OverrideAll']){
+	if(objPageOverrides['NotOverridenPages']){
+	    ChangeBtnState('pageOverriden', 'Global override on this page', 'NotOverridenPages', false, currentUrl, 'remove', objCurrentPage.callInjectCss);
 	}
 	else{
-	    ChangeBtnState('pageOverriden', 'No global override on this page', objPage.applyOverride, 'NotOverridenPages', currentUrl);
+	    ChangeBtnState('pageOverriden', 'No global override on this page', 'NotOverridenPages', true, currentUrl, 'add', objCurrentPage.callRemoveCss);
 	}
 
-	if(BackgroundPage.IsNotDomainOverriden){
-	    ChangeBtnState('domainOverriden', 'Global override on this domain', objPage.removeOverride, 'NotOverridenDomains', currentDomain);
+	if(objPageOverrides['NotOverridenDomains']){
+	    ChangeBtnState('domainOverriden', 'Global override on this domain', 'NotOverridenDomains', false, currentDomain, 'remove', objCurrentPage.callInjectCss);
 	}
 	else{
-	    ChangeBtnState('domainOverriden', 'No global override on this domain', objPage.applyOverride, 'NotOverridenDomains', currentDomain);
+	    ChangeBtnState('domainOverriden', 'No global override on this domain', 'NotOverridenDomains', true, currentDomain, 'add', objCurrentPage.callRemoveCss);
 	}
-	ChangeBtnState('overrideAll', 'Remove override on all pages', objPage.removeOverride, null, false, objPage.callRemoveCss);
+	ChangeBtnState('overrideAll', 'Remove override on all pages', 'OverrideAll', false, false, null, objCurrentPage.callRemoveCss);
     }
     else{
-	ChangeBtnState('overrideAll', 'Apply override to all pages', objPage.applyOverride, null, true, objPage.callInjectCss);
+	ChangeBtnState('overrideAll', 'Apply override on all pages', 'OverrideAll', true, true, null, objCurrentPage.callInjectCss);
     }
 }
 

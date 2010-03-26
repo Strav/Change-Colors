@@ -1,8 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"> 
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" lang="fr"> 
 <head>
-
-<script>
+<script type="text/javascript">
 
 function CurrentPage ()
 {
@@ -31,7 +30,6 @@ function CurrentPage ()
 	});
     }
 
-
     me.getOverrides = function (){
 	me.Overrides['OverridenDomains'] = JSON.parse(localStorage["OverridenDomains"]);
 	me.Overrides['OverridenPages'] = JSON.parse(localStorage["OverridenPages"]);
@@ -52,27 +50,26 @@ function CurrentPage ()
 	me.blnOverrides[overrideType] = me.Overrides[overrideType].indexOf(path) != -1;
     }
 
-    me.applyOverride = function (overrideType, path){
-	me.Overrides[overrideType].push(path);
-	me.manageOverride(overrideType, true, me.Overrides[overrideType], me.callInjectCss);
-    }
-
-    me.removeOverride = function (overrideType, path){
-	me.Overrides[overrideType].splice(me.Overrides[overrideType].indexOf(path),1);
-	me.manageOverride(overrideType, false, me.Overrides[overrideType], me.callRemoveCss);
-    }
-
-    me.manageOverride = function (overrideType, blnValue, localStorageValue, CSSfn){
+    me.manageOverride = function (overrideType, blnValue, localStorageValue, addOrRemove, CSSfn){
+	if(overrideType != 'OverrideAll'){
+	    if(addOrRemove == 'add'){
+		me.Overrides[overrideType].push(localStorageValue);
+	    }
+	    else{
+		me.Overrides[overrideType].splice(me.Overrides[overrideType].indexOf(localStorageValue),1);
+	    }
+	}
 	localStorage[overrideType]  = JSON.stringify(localStorageValue);
 	me.blnOverrides[overrideType] = blnValue;
 	CSSfn();
     }
 
     me.isStyleOverriden = function(url){
+	me.setLocation();
 	me.setIsOverridenOrNot(me.Url, 'NotOverridenPages');
 	me.setIsOverridenOrNot(me.Domain, 'NotOverridenDomains');
 	me.setIsOverridenOrNot(me.Url, 'OverridenPages');
-	me.setIsOverridenOrNot(me.Url, 'OverridenDomains');
+	me.setIsOverridenOrNot(me.Domain, 'OverridenDomains');
 	me.blnOverrides['OverrideAll'] = loadOption('OverrideAll');
 	console.log((me.blnOverrides['OverrideAll'] && !(me.blnOverrides['NotOverridenPages'] || me.blnOverrides['NotOverridenDomains'])) || me.blnOverrides['OverridenPages'] || me.blnOverrides['OverridenDomains']);
 	return (me.blnOverrides['OverrideAll'] && !(me.blnOverrides['NotOverridenPages'] || me.blnOverrides['NotOverridenDomains'])) || me.blnOverrides['OverridenPages'] || me.blnOverrides['OverridenDomains'];
@@ -98,8 +95,7 @@ function CurrentPage ()
 
     me.updatePageAction = function(tabId){
 	me.CurrentTabId = tabId;
-	me.setLocation();
-	if(me.isStyleOverriden(me.Url)){	    
+	if(me.isStyleOverriden()){	    
 	    me.callInjectCss();
 	    me.displayOverriden(tabId);
 	}
@@ -119,70 +115,67 @@ function CurrentPage ()
 	chrome.pageAction.setIcon({tabId: tabId, path: "icons/colors_icons.png"});
     }
 
+
+    me.buildCssToInject = function(){
+	var backgroundColor = '#' + loadOption("background_color");
+	var textColor = '#' + loadOption("text_color");
+	var linksColor = '#' + loadOption("links_color");
+	var visitedLinksColor = '#' + loadOption("visited_links_color");
+	var fontName = loadOption("OverrideFontName");
+	var fontSize = loadOption("FontSize");
+	var defaultBrowserFont = loadOption("DefaultBrowserFont");
+	var defaultBrowserColor = loadOption("DefaultBrowserColor");
+	var showImages = loadOption("ShowImage");
+
+	if(defaultBrowserColor != true){
+	    var css =  'html > body, html > body * {' + 
+		'background-color: '+ backgroundColor +' !important;' +
+		'color: ' + textColor + ' !important;' + 
+		'text-shadow: 0 !important;' +
+		'-webkit-text-fill-color: none !important;}' +
+		'html > body, html > body *:not([onclick]):not(:link):not(:visited) {' +
+		'background-image: none !important;}' +
+		'html > body a:link, html > body a:link *,' +
+		'html > body a:link:hover, html > body a:link:hover *,' +
+		'html > body a:link:active, html > body a:link:active * {' +
+		'color: ' + linksColor + ' !important;}' +
+		'html > body a:visited, html > body a:visited *,' +
+		'html > body a:visited:hover, html > body a:visited:hover *,' +
+		'html > body a:visited:active, html > body a:visited:active * {' +
+		'color:' +  visitedLinksColor + ' !important;}';
+	}
+	if(defaultBrowserFont != true){
+	    css += 'html > body, html > body * {' +
+		'font-family: '+ fontName  +' !important;'+ 
+		'font-size: '+ fontSize +'pt }';
+	}
+	if (!showImages) {
+	    css += 'html > body img { display:none !important; }';
+	}
+	me.CssToInject = css;
+    }
+
     me.setDefaults();
     me.getOverrides();
-    me.CssToInject = buildCssToInject();
+    me.buildCssToInject();
 }
 
 function extractDomain(url){
     return url.match(/:\/\/(.+?)\//)[1];
 }
 
-
 function loadOption(optionName){
     return JSON.parse(localStorage[optionName]);   
 }
-
 
 function saveOption(optionName, optionValue){
     localStorage[optionName]  = JSON.stringify(optionValue);    
 }
 
-
 function setDefaultOption(optionName, value){
     if(localStorage[optionName] == undefined){
 	saveOption(optionName, value);
     }
-}
-
-
-function buildCssToInject(){
-    var backgroundColor = '#' + loadOption("background_color");
-    var textColor = '#' + loadOption("text_color");
-    var linksColor = '#' + loadOption("links_color");
-    var visitedLinksColor = '#' + loadOption("visited_links_color");
-    var fontName = loadOption("OverrideFontName");
-    var fontSize = loadOption("FontSize");
-    var defaultBrowserFont = loadOption("DefaultBrowserFont");
-    var defaultBrowserColor = loadOption("DefaultBrowserColor");
-    var showImages = loadOption("ShowImage");
-
-    if(defaultBrowserColor != true){
-    var css =  'html > body, html > body * {' + 
-               'background-color: '+ backgroundColor +' !important;' +
-	       'color: ' + textColor + ' !important;' + 
-               'text-shadow: 0 !important;' +
-               '-webkit-text-fill-color: none !important;}' +
-               'html > body, html > body *:not([onclick]):not(:link):not(:visited) {' +
-               'background-image: none !important;}' +
-               'html > body a:link, html > body a:link *,' +
-               'html > body a:link:hover, html > body a:link:hover *,' +
-               'html > body a:link:active, html > body a:link:active * {' +
-               'color: ' + linksColor + ' !important;}' +
-               'html > body a:visited, html > body a:visited *,' +
-               'html > body a:visited:hover, html > body a:visited:hover *,' +
-               'html > body a:visited:active, html > body a:visited:active * {' +
-               'color:' +  visitedLinksColor + ' !important;}';
-    }
-    if(defaultBrowserFont != true){
-	css += 'html > body, html > body * {' +
-               'font-family: '+ fontName  +' !important;'+ 
-	       'font-size: '+ fontSize +'pt }';
-    }
-    if (!showImages) {
-	css += 'html > body img { display:none !important; }';
-    }
-    return css;
 }
 
 var objCurrentPage = new CurrentPage;

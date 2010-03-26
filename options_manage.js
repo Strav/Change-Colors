@@ -36,7 +36,7 @@ function colorRadioOverride(){
 function saveOption(optionName, optionValue){
     localStorage[optionName]  = JSON.stringify(optionValue);
     var backgroundPage = chrome.extension.getBackgroundPage();
-    backgroundPage.buildCssToInject();
+    backgroundPage.objCurrentPage.buildCssToInject();
 }
 
 function loadOption(optionName){
@@ -75,3 +75,4 @@ function restoreOptions(){
     bindColor('links_color', 'color', 'link');
     bindColor('visited_links_color', 'color', 'visited_link');
 }
+
