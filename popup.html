@@ -18,7 +18,7 @@ function DisplayButtons(){
     var objPageOverrides = BackgroundPage.objCurrentPage.blnOverrides;
     var currentUrl = objCurrentPage.Url;
     var currentDomain = objCurrentPage.Domain;
-    
+
     if(objPageOverrides['OverridenPages']){
 	ChangeBtnState('pageOverriden', 'Remove override on this page', 'OverridenPages', false, currentUrl, 'remove', objCurrentPage.callRemoveCss);
     }

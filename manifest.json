@@ -1,6 +1,6 @@
 {
   "name": "Change Colors",
-  "version": "2.12",
+  "version": "2.13",
   "description": "Change pages styling according to the user's preferences.",
   "icons": { "16": "icons/colors_icons.png",
              "32": "icons/colors_icons.png",

@@ -16,19 +16,13 @@ function CurrentPage ()
     me.Overrides = {'OverridenDomains' : new Array(), 
 		      'OverridenPages' : new Array(), 
 		      'NotOverridenPages' : new Array(), 
-		      'NotOverridenDomains' : new Array, 
+		      'NotOverridenDomains' : new Array(), 
 		      'OverrideAll' : null
 		     }
 
     me.Url;
     me.Domain;
-
-    me.setLocation = function (){
-	chrome.tabs.get(me.CurrentTabId, function (tab){
-	    me.Url = tab.url;
-	    me.Domain = extractDomain(tab.url);
-	});
-    }
+    me.CurrentTabId;
 
     me.getOverrides = function (){
 	me.Overrides['OverridenDomains'] = JSON.parse(localStorage["OverridenDomains"]);
@@ -59,19 +53,21 @@ function CurrentPage ()
 		me.Overrides[overrideType].splice(me.Overrides[overrideType].indexOf(localStorageValue),1);
 	    }
 	}
-	localStorage[overrideType]  = JSON.stringify(localStorageValue);
+	else{
+	    me.Overrides[overrideType] = localStorageValue;
+	}
+
+	localStorage[overrideType]  = JSON.stringify(me.Overrides[overrideType]);
 	me.blnOverrides[overrideType] = blnValue;
 	CSSfn();
     }
 
-    me.isStyleOverriden = function(url){
-	me.setLocation();
+    me.isStyleOverriden = function(){
 	me.setIsOverridenOrNot(me.Url, 'NotOverridenPages');
 	me.setIsOverridenOrNot(me.Domain, 'NotOverridenDomains');
 	me.setIsOverridenOrNot(me.Url, 'OverridenPages');
 	me.setIsOverridenOrNot(me.Domain, 'OverridenDomains');
 	me.blnOverrides['OverrideAll'] = loadOption('OverrideAll');
-	console.log((me.blnOverrides['OverrideAll'] && !(me.blnOverrides['NotOverridenPages'] || me.blnOverrides['NotOverridenDomains'])) || me.blnOverrides['OverridenPages'] || me.blnOverrides['OverridenDomains']);
 	return (me.blnOverrides['OverrideAll'] && !(me.blnOverrides['NotOverridenPages'] || me.blnOverrides['NotOverridenDomains'])) || me.blnOverrides['OverridenPages'] || me.blnOverrides['OverridenDomains'];
     }
 
@@ -95,14 +91,18 @@ function CurrentPage ()
 
     me.updatePageAction = function(tabId){
 	me.CurrentTabId = tabId;
-	if(me.isStyleOverriden()){	    
-	    me.callInjectCss();
-	    me.displayOverriden(tabId);
-	}
-	else
-	    me.displayDefault(tabId);
+	chrome.tabs.get(tabId, function (tab){
+	    me.Url = tab.url;
+	    me.Domain = extractDomain(tab.url);
+	    if(me.isStyleOverriden()){
+		me.callInjectCss();
+		me.displayOverriden(tabId);
+	    }
+	       else
+		   me.displayDefault(tabId);
 
-	chrome.pageAction.show(tabId);
+	       chrome.pageAction.show(tabId);
+	});
 
     }
 
@@ -180,29 +180,30 @@ function setDefaultOption(optionName, value){
 
 var objCurrentPage = new CurrentPage;
 
-chrome.tabs.onUpdated.addListener(objCurrentPage.updatePageAction);
 chrome.tabs.onSelectionChanged.addListener(objCurrentPage.updatePageAction);
+chrome.tabs.onUpdated.addListener(objCurrentPage.updatePageAction);
+
 
 chrome.extension.onRequest.addListener(
   function(request, sender, sendResponse) {
       switch(request.shortCut){
       case "overridePage":
 	  if(objCurrentPage.IsPageOverriden)
-	      objCurrentPage.removeOverride('OverridenPages', this.Url);
+	      objCurrentPage.manageOverride('OverridenPages', false, me.Url, 'remove', me.callRemoveCss);
 	  else
-	      objCurrentPage.applyOverride('OverridenPages', this.Url);
+	      objCurrentPage.manageOverride('OverridenPages', true, me.Url, 'add', me.callInjectCss);
 	  break;
       case "overrideDomain":
 	  if(IsDomainOverriden)
-	      objCurrentPage.removeOverride('OverridenDomains', this.Domain);
+	      objCurrentPage.manageOverride('OverridenDomains', false, me.Domain, 'remove', me.callRemoveCss);
 	  else
-	      objCurrentPage.applyOverride('OverridenDomains', this.Domain);
+	      objCurrentPage.manageOverride('OverridenDomains', true, me.Domain, 'add', me.callInjectCss);
 	  break;
       case "overrideAll":
 	  if(IsOverrideAll)
-	      objCurrentPage.manageOverride('OverrideAll', false, false, me.callRemoveCss);
+	      objCurrentPage.manageOverride('OverrideAll', false, false, null, me.callRemoveCss);
 	  else
-	      objCurrentPage.manageOverride('OverrideAll', true, true, me.callInjectCss);
+	      objCurrentPage.manageOverride('OverrideAll', true, true, null, me.callInjectCss);
 	  break;
       }
   }
