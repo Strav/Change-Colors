@@ -32,8 +32,9 @@ function CurrentPage ()
 	me.Overrides['OverrideAll'] = JSON.parse(localStorage["OverrideAll"]);
     }
 
-    me.callInjectCss = function (){
+    me.callInjectCss = function (){	
 	chrome.tabs.sendRequest(me.CurrentTabId, {action: "injectCss", css: me.CssToInject} , null);
+	me.displayOverriden(me.CurrentTabId);
     }
 
     me.callRemoveCss = function (){
@@ -89,8 +90,8 @@ function CurrentPage ()
     }
 
     me.updatePageAction = function(tabId){
-	me.CurrentTabId = tabId;
 	chrome.tabs.get(tabId, function (tab){
+	    me.CurrentTabId = tabId;
 	    me.Url = tab.url;
 	    me.Domain = extractDomain(tab.url);
 	    if(me.isStyleOverriden()){
@@ -106,7 +107,7 @@ function CurrentPage ()
     }
 
     me.displayDefault = function(tabId){
-	chrome.pageAction.setIcon({tabId: tabId, path: "icons/colors_icons.png"});
+	chrome.pageAction.setIcon({tabId: tabId, path: "icons/colors_icons_grey.png"});
     }
 
 
