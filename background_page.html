@@ -188,22 +188,22 @@ chrome.extension.onRequest.addListener(
   function(request, sender, sendResponse) {
       switch(request.shortCut){
       case "overridePage":
-	  if(objCurrentPage.IsPageOverriden)
-	      objCurrentPage.manageOverride('OverridenPages', false, me.Url, 'remove', me.callRemoveCss);
+	  if(objCurrentPage.blnOverrides['OverridenPages'])
+	      objCurrentPage.manageOverride('OverridenPages', false, objCurrentPage.Url, 'remove', objCurrentPage.callRemoveCss);
 	  else
-	      objCurrentPage.manageOverride('OverridenPages', true, me.Url, 'add', me.callInjectCss);
+	      objCurrentPage.manageOverride('OverridenPages', true, objCurrentPage.Url, 'add', objCurrentPage.callInjectCss);
 	  break;
       case "overrideDomain":
-	  if(IsDomainOverriden)
-	      objCurrentPage.manageOverride('OverridenDomains', false, me.Domain, 'remove', me.callRemoveCss);
+	  if(objCurrentPage.blnOverrides['OverridenDomains'])
+	      objCurrentPage.manageOverride('OverridenDomains', false, objCurrentPage.Domain, 'remove', objCurrentPage.callRemoveCss);
 	  else
-	      objCurrentPage.manageOverride('OverridenDomains', true, me.Domain, 'add', me.callInjectCss);
+	      objCurrentPage.manageOverride('OverridenDomains', true, objCurrentPage.Domain, 'add', objCurrentPage.callInjectCss);
 	  break;
       case "overrideAll":
-	  if(IsOverrideAll)
-	      objCurrentPage.manageOverride('OverrideAll', false, false, 'set', me.callRemoveCss);
+	  if(objCurrentPage.blnOverrides['OverrideAll'])
+	      objCurrentPage.manageOverride('OverrideAll', false, false, 'set', objCurrentPage.callRemoveCss);
 	  else
-	      objCurrentPage.manageOverride('OverrideAll', true, true, 'set', me.callInjectCss);
+	      objCurrentPage.manageOverride('OverrideAll', true, true, 'set', objCurrentPage.callInjectCss);
 	  break;
       }
   }
