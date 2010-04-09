@@ -85,7 +85,8 @@ function buildFontSelector(fontsArray){
 }
 
 function buildFontSizeSelector(){
-    var FontSizeSelectorString = '<select id="fontSize" name="fontSize" onchange="setFontSize(this.value);">'
+    var FontSizeSelectorString = '<select id="fontSize" name="fontSize" onchange="setFontSize(this.value);">';
+    FontSizeSelectorString += '<option id="fontSizeOption_0" value="0">Web page\'s font size</option>'; 
     for(i = 1; i <= 32; i++){
 	FontSizeSelectorString += '<option id="fontSizeOption_'+ i +'" value="' + i + '">' + i + '</option>'; 
     }
@@ -122,7 +123,12 @@ function setFont(fontName){
 
 function setFontSize(fontSize){
     var sampleBlock = document.getElementById('sampleBlock');
-    sampleBlock.style.fontSize = fontSize + 'pt';
+    if(parseInt(fontSize) == 0){
+	sampleBlock.style.fontSize = '12pt';
+    }
+    else{
+	sampleBlock.style.fontSize = fontSize + 'pt';
+    }
     document.getElementById('fontSizeOption_' + fontSize).selected = true;
     saveOption("FontSize", fontSize);
 }

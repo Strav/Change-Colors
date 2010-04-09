@@ -84,7 +84,7 @@ function CurrentPage ()
 	setDefaultOption("background_color", "080808");
 	setDefaultOption("links_color", "2E79DB");
 	setDefaultOption("visited_links_color", "9B51DB");
-	setDefaultOption("FontSize", "11");
+	setDefaultOption("FontSize", "0");
 	setDefaultOption("ShowImage", true);
 	setDefaultOption("OverrideFontName", "Arial");
     }
@@ -122,7 +122,7 @@ function CurrentPage ()
 	var linksColor = '#' + loadOption("links_color");
 	var visitedLinksColor = '#' + loadOption("visited_links_color");
 	var fontName = loadOption("OverrideFontName");
-	var fontSize = loadOption("FontSize");
+	var fontSize = parseInt(loadOption("FontSize"));
 	var defaultBrowserFont = loadOption("DefaultBrowserFont");
 	var defaultBrowserColor = loadOption("DefaultBrowserColor");
 	var showImages = loadOption("ShowImage");
@@ -146,8 +146,13 @@ function CurrentPage ()
 	}
 	if(defaultBrowserFont != true){
 	    css += 'html > body, html > body * {' +
-		'font-family: '+ fontName  +' !important;'+ 
-		'font-size: '+ fontSize +'pt }';
+		'font-family: '+ fontName  +' !important;';
+	    if(fontSize != 0){
+		css += 'font-size: '+ fontSize +'pt !important;}';
+	    }
+	    else{
+		css += '}'
+	    }
 	}
 	if (!showImages) {
 	    css += 'html > body img { display:none !important; }';
