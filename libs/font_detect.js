@@ -88,7 +88,7 @@ function buildFontSizeSelector(){
     var FontSizeSelectorString = '<select id="fontSize" name="fontSize" onchange="setFontSize(this.value);">';
     FontSizeSelectorString += '<option id="fontSizeOption_0" value="0">Web page\'s font size</option>'; 
     for(i = 1; i <= 32; i++){
-	FontSizeSelectorString += '<option id="fontSizeOption_'+ i +'" value="' + i + '">' + i + '</option>'; 
+	FontSizeSelectorString += '<option id="fontSizeOption_'+ i +'" value="' + i + '">' + i + 'pt</option>'; 
     }
     FontSizeSelectorString += '</select>';
     return FontSizeSelectorString;
