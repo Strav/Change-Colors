@@ -32,16 +32,28 @@
 	  </td>
 	  <td>
 	    <span id="default_font">Arial</span>&nbsp;
-	    <span id="fontSelectorBtn" onClick="showFonts();">(Select
-	      another font)</span>
+	    <span id="fontSelectorBtn" onClick="showFonts();">(Use another font)</span>
+	    <br />
 	    <div id="fontSelector" style="display: none;">
-	      <br />
 	      <script type="text/javascript">
 		<!--
-		   document.write(buildFontSelector(fonts));
+		   document.write(buildFontSelector());
 		   // -->
 	      </script>
 	    </div>
+	  </td>
+	</tr>
+	<tr id="fontSetter" style="display: none;">
+	  <td>
+	    <span>Custom font:</span>
+	  </td>
+	  <td>
+	    <input id="userCustomFont" type="text"
+	    name="userCustomFont" value="Enter a font name"
+	    onClick="this.value = '';" />
+	    <input type="button" name="addUserCustomFont"
+	    value="Add" onClick="addFont();"/><br />
+	    <span id="userFontMessage"></span>
 	  </td>
 	</tr>
 	<tr id="fontSizeRow" style="display: none;">

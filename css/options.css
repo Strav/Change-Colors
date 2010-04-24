@@ -139,3 +139,45 @@ h1
 {
   color: #4D4D4D;
 }
+
+#userCustomFont
+{  
+  width: 195px;
+}
+
+.UserFontDiv
+{
+  border: 1px solid #ccc;
+  cursor:pointer;
+  padding-top: 5px;
+  padding-left: 5px;
+  font-size: 14px;
+  height: 22px;
+  vertical-align: middle;
+  background-color: #eee;
+}
+
+.UserFontDiv:hover
+{  
+  background-image: url('../icons/selectBackground.jpg');
+}
+
+#userFontMessage
+{  
+  font-size: 10px;
+}
+
+.customFontInnerDiv
+{  
+  width: 210px;
+  float: left;
+}
+
+.customFontRemove
+{
+  margin-top: 3px;
+  width: 10px;
+  height: 10px;
+  background-image: url("../icons/removeIcon.png");
+  float: left;
+}

@@ -77,3 +77,8 @@ function restoreOptions(){
     bindColor('visited_links_color', 'color', 'visited_link');
 }
 
+function displayColoredMessage(element, message, colorCode){
+    element.style.color = colorCode;
+    element.innerHTML = message;
+}
+

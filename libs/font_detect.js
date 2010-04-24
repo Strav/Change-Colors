@@ -24,6 +24,7 @@
 
 
 var fonts = new Array("Agency FB","American Typewriter","Andale Mono","Andale Mono","Apple Chancery","Arial","Arial Black","Arial Narrow","Arial Rounded MT Bold","Arial Unicode MS","Baskerville","Big Caslon","Bitstream Charter","Bitstream Vera Sans","Bitstream Vera Sans Mono","Bitstream Vera Serif","Blackadder ITC","Book Antiqua","Bookman Old Style","Bradley Hand ITC","Brush Script MT","Calibri","Calisto MT","Cambria","Candara","Castellar","Century Gothic","Century Schoolbook","Century Schoolbook L","Comic Sans MS","Comic Sans MS","Comic Sans MS","Consolas","Constantia","Copperplate","Copperplate Gothic Bold","Copperplate Gothic Light","Corbel","Courier","Courier 10 Pitch","Courier New","Curlz MT","DejaVu Sans","DejaVu Sans Condensed","DejaVu Sans Light","DejaVu Sans Mono","DejaVu Serif","DejaVu Serif Condensed","Didot","Edwardian Script ITC","Electron","Engravers MT","Eras Demi ITC","Eras Light ITC","Felix Titling","Franklin Gothic Book","Franklin Gothic Demi","Franklin Gothic Demi Cond","Franklin Gothic Heavy","Franklin Gothic Medium","Franklin Gothic Medium Cond","FreeMono","FreeSans","FreeSerif","Freestyle Script","French Script MT","Futura","Garamond","Geneva","Georgia","Gill Sans","Gill Sans MT","Gill Sans MT Condensed","Gill Sans Ultra Bold","Goudy Old Style","Goudy Stout","Haettenschweiler","Helvetica","Helvetica Neue","Herculanum","Hoefler Text","Impact","Imprint MT Shadow","Jokerman","Juice ITC","Kartika","Kristen ITC","Liberation Mono","Liberation Sans","Liberation Serif","Lucida Bright","Lucida Console","Lucida Grande","Lucida Handwriting","Lucida Sans","Lucida Sans Typewriter","Lucida Sans Unicode","Maiandra GD","Marker Felt","Metal","Microsoft Sans Serif","Mistral","Monaco","Monotype Corsiva","MS Reference Sans Serif","Nice","Nimbus Mono L","Nimbus Roman No9 L","Nimbus Sans L","OCR A Extended","Optima","Palace Script MT","Palatino","Palatino Linotype","Papyrus","Papyrus","Perpetua","Pristina","Rage Italic","Rockwell","Rockwell Extra Bold","Script MT Bold","Skia","Sylfaen","Tahoma","Tahoma","Tempus Sans ITC","Times","Times New Roman","Trebuchet MS","URW Bookman L","URW Chancery L","URW Gothic L","URW Palladio L","Verdana","Vivaldi","Vrinda","Zapfino");
+var customFonts = loadOption('CustomFonts');
 
 var Detector = function(){
     var h = document.getElementsByTagName("BODY")[0];
@@ -72,9 +73,62 @@ var Detector = function(){
 
 /********************/
 
-function buildFontSelector(fontsArray){
+function addFont(){
+    var fontName = document.getElementById('userCustomFont').value;
+    var fontSelector = document.getElementById('fontSelector');
+    var userMessageElement = document.getElementById('userFontMessage');
+    var FontDetector = new Detector();
+    var detected = false;
+    if(fontName != ''){
+	detected = FontDetector.test(fontName);
+	if(detected){
+	    customFonts.push(fontName);
+	    saveOption('CustomFonts', customFonts);
+	    fontSelector.innerHTML = buildFontSelector();
+	    displayColoredMessage(userMessageElement, 'Font sucessfully added!', 'green');
+	}
+    }
+    
+    if(detected == false){
+	displayColoredMessage(userMessageElement, 'Sorry, font not detected.', 'red');
+    }
+    
+}
+
+function customFontSelected(fontId){
+    show('customFontRemove_' + fontId);
+}
+
+function hideCustomFontSelected(fontId){
+    hide('customFontRemove_' + fontId);
+}
+
+function removeFont(fontId){
+    customFonts = customFonts.splice(fontId + 1);
+    saveOption('CustomFonts', customFonts);
+    fontSelector.innerHTML = buildFontSelector();
+}
+
+function buildFontSelector(){
     var FontSelectorString = '<div class="FontsContainer">';
     var FontDetector = new Detector();
+    for(h = 0; h < customFonts.length; h++){
+	FontSelectorString += '<div  id="UserFont_'+h+'" class="UserFontDiv"' +
+	                      'onMouseOver="customFontSelected('+ h +');" ' +
+	                      'onMouseOut="hideCustomFontSelected('+h+');" '+ 
+	                      'onClick="setFont(\''+ customFonts[h] +'\');" '+
+                              'style="font-family: '+ customFonts[h] +'">' + 
+	                      '<div class="customFontInnerDiv">' +
+	                      customFonts[h] +
+	                      '</div>' +
+	                      '<div id="customFontRemove_'+h+'" '+
+	                      'class="customFontRemove" ' +
+                              'onClick="removeFont('+h+');" '+
+                              'style="display: none;">' +
+	                      '</div>'+
+	                      '<div class="clear"></div>'+
+	                      '</div>';
+    }
     for(i = 0; i < fonts.length; i++){
 	var testFont = FontDetector.test(fonts[i]);
 	if(testFont == true)
@@ -88,7 +142,7 @@ function buildFontSizeSelector(){
     var FontSizeSelectorString = '<select id="fontSize" name="fontSize" onchange="setFontSize(this.value);">';
     FontSizeSelectorString += '<option id="fontSizeOption_0" value="0">Web page\'s font size</option>'; 
     for(i = 1; i <= 32; i++){
-	FontSizeSelectorString += '<option id="fontSizeOption_'+ i +'" value="' + i + '">' + i + 'pt</option>'; 
+	FontSizeSelectorString += '<option id="fontSizeOption_'+ i +'" value="' + i + '">' + i + ' pt</option>'; 
     }
     FontSizeSelectorString += '</select>';
     return FontSizeSelectorString;
@@ -96,18 +150,22 @@ function buildFontSizeSelector(){
 
 
 function showFonts(){
-    var fontRow = document.getElementById("fontSelector");
+    var fontRow1 = document.getElementById("fontSelector");
+    var fontRow2 = document.getElementById("fontSetter");
     var fontBtn = document.getElementById("fontSelectorBtn");
     fontBtn.innerHTML = "(Hide font selection)"
-    fontRow.style.display = '';
+    fontRow1.style.display = '';
+    fontRow2.style.display = '';
     fontBtn.onclick = hideFonts;
 }
 
 function hideFonts(){
-    var fontRow = document.getElementById("fontSelector");
+    var fontRow1 = document.getElementById("fontSelector");
+    var fontRow2 = document.getElementById("fontSetter");
     var fontBtn = document.getElementById("fontSelectorBtn");
     fontBtn.innerHTML = "(Select another font)"
-    fontRow.style.display = 'none';
+    fontRow1.style.display = 'none';
+    fontRow2.style.display = 'none';
     fontBtn.onclick = showFonts;
 }
 
