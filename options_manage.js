@@ -70,6 +70,7 @@ function restoreOptions(){
     radioCheck("DefaultBrowserFont", "browserFontDefault", "browserFontOverride");
     radioCheck("DefaultBrowserColor", "browserColorDefault", "browserColorOverride");
     radioCheck("ShowImage", "showImageDefault", "showImageOverride");
+    radioCheck("ShowFlash", "showFlashDefault", "showFlashOverride");
     bindColor('background_color', 'backgroundColor', 'sampleBlock');
     bindColor('text_color', 'color', 'sampleBlock');
     bindColor('links_color', 'color', 'link');

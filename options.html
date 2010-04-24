@@ -104,17 +104,28 @@
 		   onchange="bindColor('visited_links_color', 'color', 'visited_link')"/>
 	  </td>
 	</tr>
-  <tr class="group_option_row">
-    <td class="option_col">
-      <span class="group_option">Show images?</span>
-    </td>
-    <td>
-      Yes: <input type="radio" id="showImageDefault" name="browser_show_image" value="true"
-                  onClick="saveOption('ShowImage', true);"/>
-      No: <input type="radio" id="showImageOverride" name="browser_show_image" value="false"
-                  onClick="saveOption('ShowImage', false);"/>
-    </td>
-  </tr>	
+	<tr class="group_option_row">
+	  <td class="option_col">
+	    <span class="group_option">Show images?</span>
+	  </td>
+	  <td>
+	    Yes: <input type="radio" id="showImageDefault" name="browser_show_image" value="true"
+	    onClick="saveOption('ShowImage', true);"/>
+	    No: <input type="radio" id="showImageOverride" name="browser_show_image" value="false"
+	    onClick="saveOption('ShowImage', false);"/>
+	  </td>
+	</tr>
+	<tr class="group_option_row">
+	  <td class="option_col">
+	    <span class="group_option">Show Flash objects?</span>
+	  </td>
+	  <td>
+	    Yes: <input type="radio" id="showFlashDefault" name="browser_show_flash" value="true"
+	    onClick="saveOption('ShowFlash', true);"/>
+	    No: <input type="radio" id="showFlashOverride" name="browser_show_flash" value="false"
+	    onClick="saveOption('ShowFlash', false);"/>
+	  </td>
+	</tr>	
       </table>
       <br /><br />
       <div id="shortCuts">

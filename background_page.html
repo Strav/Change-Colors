@@ -86,6 +86,7 @@ function CurrentPage ()
 	setDefaultOption("visited_links_color", "9B51DB");
 	setDefaultOption("FontSize", "0");
 	setDefaultOption("ShowImage", true);
+	setDefaultOption("ShowFlash", true);
 	setDefaultOption("OverrideFontName", "Arial");
     }
 
@@ -126,6 +127,7 @@ function CurrentPage ()
 	var defaultBrowserFont = loadOption("DefaultBrowserFont");
 	var defaultBrowserColor = loadOption("DefaultBrowserColor");
 	var showImages = loadOption("ShowImage");
+	var showFlash = loadOption("ShowFlash");
 
 	if(defaultBrowserColor != true){
 	    var css =  'html > body, html > body * {' + 
@@ -154,8 +156,11 @@ function CurrentPage ()
 		css += '}'
 	    }
 	}
-	if (!showImages) {
+	if(!showImages) {
 	    css += 'html > body img { display:none !important; }';
+	}
+	if(!showFlash){
+	    css += 'html > body object { display:none !important;}';
 	}
 	me.CssToInject = css;
     }
