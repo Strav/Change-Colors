@@ -149,6 +149,7 @@ function CurrentPage ()
 	}
 	if(defaultBrowserFont != true){
 	    css += 'html > body, html > body * {' +
+		'line-height: normal !important;' +
 		'font-family: '+ fontName  +' !important;';
 	    if(fontSize != 0){
 		css += 'font-size: '+ fontSize +'pt !important;}';
